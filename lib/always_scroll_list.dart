@@ -8,6 +8,7 @@ class AlwaysScrollList extends StatefulWidget {
   final List<dynamic> items;
   final Widget Function(BuildContext, int, dynamic) itemBuilder;
   final Axis direction;
+  final Duration? holdDuration;
   final bool enabled;
 
   const AlwaysScrollList.vertical({
@@ -15,6 +16,7 @@ class AlwaysScrollList extends StatefulWidget {
     required this.items,
     required this.itemBuilder,
     this.enabled = true,
+    this.holdDuration,
   })  : direction = Axis.vertical,
         super(key: key);
 
@@ -23,6 +25,7 @@ class AlwaysScrollList extends StatefulWidget {
     required this.items,
     required this.itemBuilder,
     this.enabled = true,
+    this.holdDuration,
   })  : direction = Axis.horizontal,
         super(key: key);
 
@@ -42,6 +45,8 @@ class _AlwaysScrollListState extends State<AlwaysScrollList> {
   void initState() {
     super.initState();
     if (widget.enabled) {
+      final _holdDuration =
+          widget.holdDuration ?? const Duration(milliseconds: 3000);
       _items = [...widget.items, ...widget.items];
       _scrollController = ScrollController();
       _scrollTimer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
@@ -67,10 +72,7 @@ class _AlwaysScrollListState extends State<AlwaysScrollList> {
         }
 
         if (_stopScroll) {
-          Future.delayed(
-            const Duration(milliseconds: 2000),
-            () => _stopScroll = false,
-          );
+          Future.delayed(_holdDuration, () => _stopScroll = false);
         }
 
         if ((_scrollController?.position.pixels ?? 0.0) >=
