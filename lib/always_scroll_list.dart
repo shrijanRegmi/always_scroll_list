@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 
 class AlwaysScrollList extends StatefulWidget {
   final List<dynamic> items;
-  final Widget Function(BuildContext, int) itemBuilder;
+  final Widget Function(BuildContext, int, dynamic) itemBuilder;
   final Axis direction;
   final bool enabled;
 
@@ -99,7 +99,11 @@ class _AlwaysScrollListState extends State<AlwaysScrollList> {
       scrollDirection: widget.direction,
       controller: _scrollController,
       itemCount: _items.length,
-      itemBuilder: widget.itemBuilder,
+      itemBuilder: (context, index) => widget.itemBuilder(
+        context,
+        index,
+        _items[index],
+      ),
     );
   }
 }
